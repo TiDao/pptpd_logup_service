@@ -12,7 +12,7 @@ import(
 
 func check(e error){
     if e != nil{
-        panic(e)
+        log.Fatal(e)
     }
 }
 
@@ -78,54 +78,3 @@ func main(){
     http.HandleFunc("/",service)
     log.Fatal(http.ListenAndServe("0.0.0.0:8000",nil))
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
