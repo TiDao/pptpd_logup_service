@@ -7,7 +7,7 @@ import(
     "strings"
     "net/http"
     "log"
-    "os/exec"
+    //"os/exec"
 )
 
 func check(e error){
@@ -45,36 +45,44 @@ func WriteFile(filename string,content string){
         file.Close()
 }
 
-func service(writer http.ResponseWriter,r *http.Request){ //the url is http://IP:8000/username=XXXX_password=XXXXXX
-    file := "/etc/ppp/chap-secrets"
-    url := strings.Split(r.URL.Path,"_")
-    user := strings.Split(url[0],"=")
-    var Username string
-    var Password string 
-    if user[0] == "/username" {
-        Username = user[1]
-    }else{
-        fmt.Fprintf(writer,"请输入正确的链接1,%s",user[0])
-    }
-    pass := strings.Split(url[1],"=")
-    if pass[0] == "password" {
-        Password = pass[1]
-    }else{
-        fmt.Fprintf(writer,"请输入正确的链接2,%s",pass[0])
-    }
-    if !judgement(file,Username) {
+
+func service(writer http.ResponseWriter,r *http.Request){ //the url is http://IP:8000/create/get?username=xxx&password=xxx
+    file := "/etc/openvpn/server/user/psw-file"
+	//file := "./psw-file"
+    url := r.URL.Query()
+	UserName,ok := url["username"]
+	if !ok{
+		fmt.Fprintf(writer,"请求URL为http://192.168.1.25/create/get?username=xxx&password=xxx,xxx为替换内容\n")
+		return
+	}else if len(UserName) > 1{
+		fmt.Fprintf(writer,"username只能有一个\n")
+	}
+
+	PassWord,ok := url["password"]
+	if !ok{
+		fmt.Fprintf(writer,"请求URL为http://192.168.1.25/create/get?username=xxx&password=xxx,xxx为替换内容\n")
+		return
+	}else if len(PassWord) > 1 {
+		fmt.Fprintf(writer,"password只能有一个\n")
+	}
+
+    if !judgement(file,UserName[0]) {
         fmt.Fprintf(writer,"用户名已经被使用")
     }else{
-        input := "\""+Username+"\""+" "+"pptpd"+" "+"\""+Password+"\""+" "+"*"+"\n"
+        input := UserName[0]+" "+PassWord[0]+"\n"
         WriteFile(file,input)
-        exec.Command("bash","-c","service pptpd restart")
         fmt.Fprintf(writer,"注册成功,%s",input)
     }
+}
+
+func showURL(w http.ResponseWriter,r *http.Request){
+	fmt.Fprintf(w,"请求URL为http://192.168.1.25/create/get?username=xxx&password=xxx,xxx为替换内容\n")
 }
 
 
 
 func main(){
-    http.HandleFunc("/",service)
-    log.Fatal(http.ListenAndServe("0.0.0.0:8000",nil))
+    http.HandleFunc("/create/",service)
+	http.HandleFunc("/",showURL)
+    log.Fatal(http.ListenAndServe("0.0.0.0:80",nil))
 }
