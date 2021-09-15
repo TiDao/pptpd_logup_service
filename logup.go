@@ -84,5 +84,6 @@ func showURL(w http.ResponseWriter,r *http.Request){
 func main(){
     http.HandleFunc("/create/",service)
 	http.HandleFunc("/",showURL)
+	log.Println("start litening 0.0.0.0:80")
     log.Fatal(http.ListenAndServe("0.0.0.0:80",nil))
 }
