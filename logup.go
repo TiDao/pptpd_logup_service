@@ -72,6 +72,7 @@ func service(writer http.ResponseWriter,r *http.Request){ //the url is http://IP
         input := UserName[0]+" "+PassWord[0]+"\n"
         WriteFile(file,input)
         fmt.Fprintf(writer,"注册成功,%s",input)
+		log.Printf("注册成功 %s",UserName[0])
     }
 }
 
