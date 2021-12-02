@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style> 
+    .content {
+      margin-top: 20px;
+      height: 378px;
+      width: 335px;
+      text-align: center;
+    }
+    .content a {
+      font-size: 16px;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+    .content input {
+      margin-top: 20px;
+      margin-bottom: 20px;
+      height: 30px;
+      background: #FFFFFF;
+      border-radius: 5px;
+      border: 1px solid #DDDDDD;
+    }
+    .content #form {
+      width: 100%;
+    }
+    .content #form span {
+      font-size: 16px;
+    }
+    .content button {
+      margin-bottom: 15px;
+      width: 50%;
+      font-size: 16px;
+      color: #ffffff;
+      height: 35px;
+      background: #568DEE;
+      border-radius: 5px;
+      border: none;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="content">
+      <a href="/download" download="openvpn.zip" id="">点击下载</a>
+      <form id="form">
+        <div>
+          <span>用户名：</span>
+          <input type="text" id="username" />
+        </div>
+        <div>
+          <span>密码：</span>
+          <input type="text" id="password" />
+        </div>
+　　　</form>
+    <button onclick="submitBtn()">创建</button>
+    <button onclick="deleteBtn()">删除</button>
+    </div>
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery.form/4.2.2/jquery.form.js"></script>
+    <script type="text/javascript">
+      function submitBtn() {
+        $.ajax({
+            url:'/create',
+            type:'POST',
+            dataType: 'json',
+            contentType: "application/json",
+            data:JSON.stringify({
+              username: document.getElementById('username').value,
+              password:document.getElementById('password').value
+            }),
+            // xhrFields: {withCredentials: true},
+            async: false,
+            success:function(res){
+              alert(res)
+            },
+            error:function(err){
+              alert(err.responseText);
+            }
+        })
+      }
+      function deleteBtn() {
+        $.ajax({
+            url:'/delete',
+            type:'POST',
+            dataType: 'json',
+            contentType: "application/json",
+            data:JSON.stringify({
+              username: document.getElementById('username').value,
+              password:document.getElementById('password').value
+            }),
+            // xhrFields: {withCredentials: true},
+            async: false,
+            success:function(res){
+              alert(res)
+            },
+            error:function(err){
+              console.log(err);
+            }
+        })
+      }
+    </script>
+  </body>
+</html>
